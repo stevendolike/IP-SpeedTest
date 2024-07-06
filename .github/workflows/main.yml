@@ -17,13 +17,13 @@ jobs:
         go-version: 1.16
         
     - name: Build for amd
-      run: GOOS=linux GOARCH=amd go build -o iptest-linux-amd main.go
+      run: GOOS=linux GOARCH=amd32 go build -o iptest-linux-amd main.go
       
     - name: Build for amd64
       run: GOOS=linux GOARCH=amd64 go build -o iptest-linux-amd64 main.go
 
     - name: Build for arm
-      run: GOOS=linux GOARCH=arm64 go build -o iptest-linux-arm main.go
+      run: GOOS=linux GOARCH=arm32 go build -o iptest-linux-arm main.go
       
     - name: Build for arm64
       run: GOOS=linux GOARCH=arm64 go build -o iptest-linux-arm64 main.go
