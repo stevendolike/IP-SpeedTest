@@ -1,23 +1,69 @@
-name:iptest
+name: Build and Release
 
 on:
-  release:
-      - '*'
+  workflow_dispatch:
 
 jobs:
-  build-go-binary:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux, windows, darwin] # 需要打包的系统
-        goarch: [amd64, arm64] # 需要打包的架构
-        exclude: # 排除某些平台和架构
-          - goarch: arm64
-            goos: windows
+
     steps:
-      - uses: actions/checkout@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # 一个默认的变量，用来实现往 Release 中添加文件
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          goversion: 1.18 # 可以指定编译使用的 Golang 版本
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build for amd64
+      run: GOOS=linux GOARCH=amd64 go build -o app-amd64 main.go
+
+    - name: Build for arm64
+      run: GOOS=linux GOARCH=arm64 go build -o app-arm64 main.go
+
+    - name: Build for windows64
+      run: GOOS=windows GOARCH=amd64 go build -o app-windows64.exe main.go
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          tag_name: v1.0.0
+          release_name: Release v1.0.0
+          body: |
+            Description of the release
+          draft: false
+          prerelease: false
+
+    - name: Upload amd64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./app-amd64
+        asset_name: app-amd64
+        asset_content_type: application/octet-stream
+
+    - name: Upload arm64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./app-arm64
+        asset_name: app-arm64
+        asset_content_type: application/octet-stream
+
+    - name: Upload windows64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./app-windows64.exe
+        asset_name: app-windows64.exe
+        asset_content_type: application/octet-stream
