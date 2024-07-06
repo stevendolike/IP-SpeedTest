@@ -18,9 +18,6 @@ jobs:
 
     - name: Build for amd64
       run: GOOS=linux GOARCH=amd64 go build -o iptest-linux-amd64 main.go
-
-    - name: Build for arm7
-      run: GOOS=linux GOARCH=arm7 go build -o iptest-linux-arm7 main.go
       
     - name: Build for arm8
       run: GOOS=linux GOARCH=arm8 go build -o iptest-linux-arm8 main.go
@@ -52,17 +49,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./iptest-linux-amd64
         asset_name: iptest-linux-amd64
-        asset_content_type: application/octet-stream
-
-    - name: Upload arm7 binary
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./iptest-linux-arm7
-        asset_name: iptest-linux-arm7
-        asset_content_type: application/octet-stream       
+        asset_content_type: application/octet-stream   
   
     - name: Upload arm8 binary
       uses: actions/upload-release-asset@v1
