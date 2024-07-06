@@ -17,13 +17,13 @@ jobs:
         go-version: 1.16
 
     - name: Build for amd64
-      run: GOOS=linux GOARCH=amd64 go build -o app-amd64 main.go
+      run: GOOS=linux GOARCH=amd64 go build -o iptest-linux-amd64 main.go
 
     - name: Build for arm64
-      run: GOOS=linux GOARCH=arm64 go build -o app-arm64 main.go
+      run: GOOS=linux GOARCH=arm64 go build -o iptest-linux-arm64 main.go
 
     - name: Build for windows64
-      run: GOOS=windows GOARCH=amd64 go build -o app-windows64.exe main.go
+      run: GOOS=windows GOARCH=amd64 go build -o iptest-windows64.exe main.go
 
     - name: Create Release
       id: create_release
@@ -44,8 +44,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./app-amd64
-        asset_name: app-amd64
+        asset_path: ./iptest-linux-amd64
+        asset_name: iptest-linux-amd64
         asset_content_type: application/octet-stream
 
     - name: Upload arm64 binary
@@ -54,8 +54,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./app-arm64
-        asset_name: app-arm64
+        asset_path: ./iptest-linux-arm64
+        asset_name: iptest-linux-arm64
         asset_content_type: application/octet-stream
 
     - name: Upload windows64 binary
@@ -64,6 +64,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./app-windows64.exe
-        asset_name: app-windows64.exe
+        asset_path: ./iptest-windows64.exe
+        asset_name: iptest-windows64.exe
         asset_content_type: application/octet-stream
