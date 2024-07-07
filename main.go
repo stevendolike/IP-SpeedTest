@@ -40,6 +40,7 @@ type result struct {
 	port        int           // 端口
 	dataCenter  string        // 数据中心
 	region      string        // 地区
+	domainAbbr  string        // 顶级域名后缀	
 	city        string        // 城市
 	latency     string        // 延迟
 	tcpDuration time.Duration // TCP请求延迟
@@ -271,10 +272,10 @@ func main() {
 					loc, ok := locationMap[dataCenter]
 					if ok {
 						fmt.Printf("发现有效IP %s 端口 %d 位置信息 %s 延迟 %d 毫秒\n", ipAddr, port, loc.City, tcpDuration.Milliseconds())
-						resultChan <- result{ipAddr, port, dataCenter, loc.Region, loc.City, fmt.Sprintf("%d ms", tcpDuration.Milliseconds()), tcpDuration}
+						resultChan <- result{ipAddr, port, dataCenter, loc.Region, loc.Cca2, loc.City, fmt.Sprintf("%d ms", tcpDuration.Milliseconds()), tcpDuration}
 					} else {
 						fmt.Printf("发现有效IP %s 端口 %d 位置信息未知 延迟 %d 毫秒\n", ipAddr, port, tcpDuration.Milliseconds())
-						resultChan <- result{ipAddr, port, dataCenter, "", "", fmt.Sprintf("%d ms", tcpDuration.Milliseconds()), tcpDuration}
+						resultChan <- result{ipAddr, port, dataCenter, "", "", "", fmt.Sprintf("%d ms", tcpDuration.Milliseconds()), tcpDuration}
 					}
 				}
 			}
@@ -352,15 +353,15 @@ func main() {
 	}
 	writer := csv.NewWriter(file)
 	if *speedTest > 0 {
-		writer.Write([]string{"IP地址", "端口", "TLS", "数据中心", "地区", "城市", "网络延迟", "下载速度MB/s"})
+		writer.Write([]string{"IP地址", "端口", "TLS", "数据中心", "地区", "国家", "城市", "网络延迟", "下载速度MB/s"})
 	} else {
-		writer.Write([]string{"IP地址", "端口", "TLS", "数据中心", "地区", "城市", "网络延迟"})
+		writer.Write([]string{"IP地址", "端口", "TLS", "数据中心", "地区", "国家", "城市", "网络延迟"})
 	}
 	for _, res := range results {
 		if *speedTest > 0 {
-			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.city, res.result.latency, fmt.Sprintf("%.2f", res.downloadSpeed)})
+			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.domainAbbr, res.result.city, res.result.latency, fmt.Sprintf("%.2f", res.downloadSpeed)})
 		} else {
-			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.city, res.result.latency})
+			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.domainAbbr, res.result.city, res.result.latency})
 		}
 	}
 	writer.Flush()
