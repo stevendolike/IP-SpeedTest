@@ -359,9 +359,9 @@ func main() {
 	}
 	for _, res := range results {
 		if *speedTest > 0 {
-			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.domainAbbr, res.result.city, res.result.latency, fmt.Sprintf("%.2f", res.downloadSpeed)})
+			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.cca2, res.result.region, res.result.domainAbbr, res.result.city, res.result.latency, fmt.Sprintf("%.2f", res.downloadSpeed)})
 		} else {
-			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.domainAbbr, res.result.city, res.result.latency})
+			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.cca2, res.result.region, res.result.domainAbbr, res.result.city, res.result.latency})
 		}
 	}
 	writer.Flush()
