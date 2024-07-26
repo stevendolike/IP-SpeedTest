@@ -1,2 +1,6 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+locations.json
+ip.csv
+ip.txt
+.idea
+/iptest
+/tmp
