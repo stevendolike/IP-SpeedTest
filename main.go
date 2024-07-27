@@ -30,6 +30,7 @@ var (
 	outFile      = flag.String("outfile", "ip.csv", "输出文件名称")                              // 输出文件名称
 	maxThreads   = flag.Int("max", 100, "并发请求最大协程数")                                       // 最大协程数
 	speedTest    = flag.Int("speedtest", 5, "下载测速协程数量,设为0禁用测速")                            // 下载测速协程数量
+	speedLimit   = flag.Int("speedlimit", 0, "最低下载速度(MB/s)")                                   // 最低下载速度
 	speedTestURL = flag.String("url", "speed.cloudflare.com/__down?bytes=500000000", "测速文件地址") // 测速文件地址
 	enableTLS    = flag.Bool("tls", true, "是否启用TLS")                                       // TLS是否启用
 	TCPurl       = flag.String("tcpurl", "www.speedtest.net", "TCP请求地址")                   // TCP请求地址
@@ -39,7 +40,6 @@ type result struct {
 	ip          string        // IP地址
 	port        int           // 端口
 	dataCenter  string        // 数据中心
-
 	region      string        // 地区
 	cca2        string 
 	city        string        // 城市
@@ -360,8 +360,11 @@ func main() {
 	}
 	for _, res := range results {
 		if *speedTest > 0 {
+		if res.downloadSpeed >= float64(*speedLimit) {
 			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.cca2, res.result.city, res.result.latency, fmt.Sprintf("%.2f", res.downloadSpeed)})
-		} else {
+			}
+		} 
+		else {
 			writer.Write([]string{res.result.ip, strconv.Itoa(res.result.port), strconv.FormatBool(*enableTLS), res.result.dataCenter, res.result.region, res.result.cca2, res.result.city, res.result.latency})
 		}
 	}
