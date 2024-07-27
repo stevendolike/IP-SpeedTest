@@ -18,6 +18,7 @@ ipspeedtest 可以接受以下参数：
 - max: 并发请求最大协程数 (default 100)
 - outfile: 输出文件名称 (default "ip.csv")
 - speedtest: 下载测速协程数量,设为0禁用测速 (default 5)
+- speedlimit: 最低下载速度(MB/s) (default 0)（测速结果保留所设置以上）
 - tls: 是否启用TLS (default true)
 - url: 测速文件地址 (default "speed.cloudflare.com/__down?bytes=500000000")
 
@@ -25,7 +26,7 @@ ipspeedtest 可以接受以下参数：
 在终端中运行以下命令来启动程序：
 
 ```
-./iptest -file=ip.txt -outfile=ip.csv -max=100 -speedtest=1 -tls=true -url=speed.cloudflare.com/__down?bytes=500000000
+./iptest -file=ip.txt  -tls=true -speedtest=3 -speedlimit=5  -url="speed.cloudflare.com/__down?bytes=500000000" -max=100  -outfile="result.csv"
 ```
 请替换参数值以符合您的实际需求。
 
