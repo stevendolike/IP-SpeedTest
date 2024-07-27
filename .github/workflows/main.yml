@@ -1,13 +1,14 @@
-name: build
-
+name: GitHub CI
 on:
-  release:
-    types: [created] # 表示在创建新的 Release 时触发
+  push:
+    branches: [master]
+  workflow_dispatch:
+  pull_request:
 
-permissions:
-  contents: write
-  packages: write
-
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+  
 jobs:
   build-go-binary:
     runs-on: ubuntu-latest
