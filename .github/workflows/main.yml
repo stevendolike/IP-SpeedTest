@@ -66,3 +66,5 @@ jobs:
           binary_name: "iptest" # 可以指定二进制文件的名称
           ldflags: -s -w -X "main.version=${{ github.ref_name }}"
           md5sum: false
+          tag: Alpha
+          tag_name: Alpha
