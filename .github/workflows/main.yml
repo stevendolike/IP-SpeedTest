@@ -66,34 +66,4 @@ jobs:
           binary_name: "iptest" # 可以指定二进制文件的名称
           ldflags: -s -w -X "main.version=${{ github.ref_name }}"
           md5sum: false
-      - name: Delete current release assets
-        uses: andreaswilli/delete-release-assets-action@v2.0.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: Alpha
-          deleteOnlyFromDrafts: false
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-          path: bin/
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: bin
-
-      - name: Tag Repo
-        uses: richardsimko/update-tag@v1.0.6
-        with:
-          tag_name: Alpha
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release
-        uses: softprops/action-gh-release@v1
-        if: ${{  success() }}
-        with:
-          tag: Alpha
-          tag_name: Alpha
-          files: bin/*
-          generate_release_notes: true
