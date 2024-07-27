@@ -85,8 +85,8 @@ func main() {
 
 	var locations []location
 	if _, err := os.Stat("locations.json"); os.IsNotExist(err) {
-		fmt.Println("本地 locations.json 不存在\n正在从 https://speed.bestip.one/locations 下载 locations.json")
-		resp, err := http.Get("https://speed.bestip.one/locations")w1
+		fmt.Println("本地 locations.json 不存在\n正在从 https://speed.cloudflare.com/locations 下载 locations.json")
+		resp, err := http.Get("https://speed.cloudflare.com/locations")
 		if err != nil {
 			fmt.Printf("无法从URL中获取JSON: %v\n", err)
 			return
