@@ -16,57 +16,30 @@ jobs:
     strategy:
       matrix:
         goos: [linux, windows, darwin]
-        goarch: [amd64, arm64, arm, mips, mips64, mips64le, mipsle, 386]
+        goarch: [amd64, arm64, arm, 386]
         exclude:
           - goarch: arm64
             goos: windows
-          - goarch: 386
-            goos: darwin
+          - goarch: 386 
+            goos: darwin 
           # arm 排除
           - goarch: arm
             goos: windows
           - goarch: arm
             goos: darwin
-          # 排除所有 mips 架构
-          - goarch: mips
-            goos: linux
-          - goarch: mips
-            goos: windows
-          - goarch: mips
-            goos: darwin
-          - goarch: mips
-            goos: android
-          - goarch: mips64
-            goos: linux
-          - goarch: mips64
-            goos: windows
-          - goarch: mips64
-            goos: darwin
-          - goarch: mips64
-            goos: android
-          - goarch: mips64le
-            goos: linux
-          - goarch: mips64le
-            goos: windows
-          - goarch: mips64le
-            goos: darwin
-          - goarch: mips64le
-            goos: android
-          - goarch: mipsle
-            goos: linux
-          - goarch: mipsle
-            goos: windows
-          - goarch: mipsle
-            goos: darwin
-          - goarch: mipsle
-            goos: android
 
     steps:
       - uses: actions/checkout@v3
       - name: Get latest tag
         id: get_latest_tag
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0)
+          DEFAULT_TAG="v1.0.0"  # 默认值
+          # 检查是否存在 Tag，如果不存在则使用默认值
+          if git tag --list | grep -q .; then
+            LATEST_TAG=$(git describe --tags --abbrev=0)
+          else
+            LATEST_TAG="$DEFAULT_TAG"
+          fi
           echo "Latest tag: $LATEST_TAG"
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
       - name: Generate new version
@@ -74,8 +47,8 @@ jobs:
         run: |
           LATEST_TAG=${{ env.LATEST_TAG }}
           if [[ -z "$LATEST_TAG" ]]; then
-            # 如果没有 Tag，默认从 v1.0.0 开始
-            LATEST_TAG="v1.0.0"
+            # 如果没有 Tag，使用默认值
+            LATEST_TAG="$DEFAULT_TAG"
           fi
           # 提取主版本号、次版本号和修订号
           MAJOR=$(echo "$LATEST_TAG" | cut -d. -f1 | tr -d 'v')
