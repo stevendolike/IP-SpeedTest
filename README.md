@@ -1,6 +1,15 @@
 # 简介
 Cloudflare IP 测速器是一个使用 Golang 编写的小工具，用于测试一些 Cloudflare 的 IP 地址的延迟和下载速度，并将结果输出到 CSV 文件中。  
-软件下载：https://github.com/bh-qt/Cloudflare-IP-SpeedTest/releases  
+软件下载：https://github.com/bh-qt/Cloudflare-IP-SpeedTest/releases
+
+## 修改说明
+在原版基础上增加了 delay 延迟参数，默认值为 220ms，超过该延迟的 ip 将跳过测速   
+windows版编译指令
+```bash
+git clone https://github.com/yutian81/IP-SpeedTest.git
+cd IP-SpeedTest
+go build -o iptest.exe main.go
+```
 
 # 安装
 首先安装 Golang 和 Git，然后在终端中运行以下命令：
