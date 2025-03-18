@@ -1,8 +1,9 @@
 name: build
 
 on:
-  release:
-    types: [created] # 表示在创建新的 Release 时触发
+  push:
+    tags:
+      - 'v*.*.*'  # 匹配以 v 开头，后跟数字的 Tag，例如 v1.0.0
 
 permissions:
   contents: write
@@ -65,3 +66,5 @@ jobs:
           binary_name: "iptest" # 可以指定二进制文件的名称
           ldflags: -s -w -X "main.version=${{ github.ref_name }}"
           md5sum: false
+          release_tag: ${{ github.ref_name }}  # 使用 Tag 作为 Release 的版本号
+          create_release: true  # 自动创建 Release
