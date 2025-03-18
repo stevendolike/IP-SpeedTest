@@ -3,6 +3,7 @@
 ### linux 系统
 依次运行以下脚本
 ```bash
+py downip.py
 bash formatip.sh
 bash ipspeedtest.sh
 bash uploadcsv.sh
