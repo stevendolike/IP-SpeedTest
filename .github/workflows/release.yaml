@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         goos: [linux, windows, darwin] # 需要打包的系统
-        goarch: [amd64, arm64, arm, mips, mips64, mips64le, mipsle, 386] # 需要打包的架构
+        goarch: [amd64, arm64, arm, 386] # 需要打包的架构
         exclude: # 排除某些平台和架构
           - goarch: arm64
             goos: windows
@@ -27,34 +27,6 @@ jobs:
           - goarch: arm
             goos: darwin
 
-          # windows、darwin、android 排除 mips, mips64, mips64le, mipsle
-          - goarch: mips
-            goos: windows
-          - goarch: mips64
-            goos: windows
-          - goarch: mips64le
-            goos: windows
-          - goarch: mipsle
-            goos: windows
-
-          - goarch: mips
-            goos: darwin
-          - goarch: mips64
-            goos: darwin
-          - goarch: mips64le
-            goos: darwin
-          - goarch: mipsle
-            goos: darwin
-
-          - goarch: mips
-            goos: android
-          - goarch: mips64
-            goos: android
-          - goarch: mips64le
-            goos: android
-          - goarch: mipsle
-            goos: android
-
     steps:
       - uses: actions/checkout@v3
       - uses: wangyoucao577/go-release-action@v1
@@ -63,8 +35,10 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: 1.21 # 可以指定编译使用的 Golang 版本
-          binary_name: "iptest" # 可以指定二进制文件的名称
-          ldflags: -s -w -X "main.version=${{ github.ref_name }}"
+          binary_name: "iptest" # 使用固定的二进制文件名
+          ldflags: -s -w -X "main.version=${{ github.ref_name }}" # 将版本号注入到 Go 二进制文件
           md5sum: false
           release_tag: ${{ github.ref_name }}  # 使用 Tag 作为 Release 的版本号
           create_release: true  # 自动创建 Release
+          asset_name: "iptest-${{ matrix.goos }}-${{ matrix.goarch }}.zip" # 自定义 Release 文件名为 ZIP 格式
+          compress_assets: true  # 启用压缩功能
