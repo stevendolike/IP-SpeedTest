@@ -17,6 +17,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -34,6 +35,7 @@ var (
     speedTestURL = flag.String("url", "speed.cloudflare.com/__down?bytes=500000000", "测速文件地址") // 测速文件地址
 	enableTLS    = flag.Bool("tls", true, "是否启用TLS")                                       // TLS是否启用
 	TCPurl       = flag.String("tcpurl", "www.speedtest.net", "TCP请求地址")                   // TCP请求地址
+	delay = flag.Int("delay", 220, "延迟阈值(ms)")     // 新增延迟阈值参数
 )
 
 type result struct {
@@ -78,6 +80,7 @@ func increaseMaxOpenFiles() {
 func main() {
 	flag.Parse()
 
+	var validCount int32 // 有效IP计数器
 	startTime := time.Now()
 	osType := runtime.GOOS
 	// 如果是linux系统,尝试提升文件描述符的上限
@@ -154,16 +157,16 @@ func main() {
 			if err != nil {
 				return
 			}
-			defer func(conn net.Conn) {
-				err := conn.Close()
-				if err != nil {
-
-				}
-			}(conn)
-
+			defer conn.Close()
+			
+			// 计算并检查TCP连接延迟
 			tcpDuration := time.Since(start)
+			if tcpDuration.Milliseconds() > int64(*delay) {
+				return // 超过延迟阈值直接
+			}
+			// 记录通过延迟检查的有效IP
+			atomic.AddInt32(&validCount, 1)
 			start = time.Now()
-
 			client := http.Client{
 				Transport: &http.Transport{
 					Dial: func(network, addr string) (net.Conn, error) {
@@ -180,7 +183,6 @@ func main() {
 				protocol = "http://"
 			}
 			requestURL := protocol + *TCPurl + "/cdn-cgi/trace"
-
 			req, _ := http.NewRequest("GET", requestURL, nil)
 
 			// 添加用户代理
@@ -232,6 +234,7 @@ func main() {
 	}
 	var results []speedtestresult
 	if *speedTest > 0 {
+		fmt.Printf("找到符合条件的ip 共%d个\n", atomic.LoadInt32(&validCount))
 		fmt.Printf("开始测速\n")
 		var wg2 sync.WaitGroup
 		wg2.Add(*speedTest)
@@ -310,7 +313,8 @@ func main() {
 	writer.Flush()
 	// 清除输出内容
 	fmt.Print("\033[2J")
-	fmt.Printf("成功将结果写入文件 %s，耗时 %d秒\n", *outFile, time.Since(startTime)/time.Second)
+	fmt.Printf("有效IP数量: %d | 成功将结果写入文件 %s，耗时 %d秒\n", 
+		atomic.LoadInt32(&validCount), *outFile, time.Since(startTime)/time.Second)
 }
 
 // 从文件中读取IP地址和端口
