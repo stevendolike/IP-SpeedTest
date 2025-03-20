@@ -17,5 +17,5 @@ bash uploadcsv.sh
 ip库来自tg频道：https://t.me/Marisa_kristi
 
 ### 测速软件
-https://github.com/bh-qt/Cloudflare-IP-SpeedTest  
+https://github.com/yutian81/IP-SpeedTest  
 测速结果 csv 文件全汉化
