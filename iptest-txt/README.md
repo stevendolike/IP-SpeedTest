@@ -10,7 +10,7 @@ bash uploadcsv.sh
 ```
 
 ### win 系统
-先安装 gitbash 和 curl  
+先安装 python，gitbash 和 curl  
 再运行 run.bat  
 
 ### IP 库
