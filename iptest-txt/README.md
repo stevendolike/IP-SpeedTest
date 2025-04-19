@@ -1,5 +1,10 @@
 ## 一键测速并上传到git仓库
 
+### 先安装依赖库
+```py
+pip install telethon pysocks
+```
+
 ### linux 系统
 依次运行以下脚本
 ```bash
