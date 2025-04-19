@@ -12,8 +12,8 @@ if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # ================= 配置区域 =================
-API_ID = '25867287'
-API_HASH = '5d1de8b1faf87d6dbc55614714417ef0'
+API_ID = '123456789'
+API_HASH = '532454gfghdgd87dtettwt6785444775'
 CHANNEL = 'Marisa_kristi'
 PROXY = ('socks5', '127.0.0.1', 10808, True)
 DOWNLOAD_DIR = 'ip'
